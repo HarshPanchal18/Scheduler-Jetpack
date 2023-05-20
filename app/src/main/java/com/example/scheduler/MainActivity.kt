@@ -1,9 +1,12 @@
 package com.example.scheduler
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -19,6 +22,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -49,13 +53,18 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 getGenerated = emptyArray()
                 getGenerated = Generator(subjects)
+                Log.i("Monday", getGenerated[0][0].toString())
+                //Log.i("Subjects", getGenerated.toString())
                 Surface(
                     //modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(topBar = {
-                        TopAppBar(title = { Text(text = title.value) },
-                            actions = {})
+                        TopAppBar(
+                            title = { Text(text = title.value) },
+                            actions = {},
+                            modifier = Modifier.background(Color.Gray)
+                        )
                     },
                         bottomBar = {
                             val days = listOf(
@@ -74,7 +83,7 @@ class MainActivity : ComponentActivity() {
                                 days.forEach {
                                     BottomNavigationItem(
                                         selected = currentRoute == it.route,
-                                        icon = { Icon(it.icon,null) },
+                                        icon = { Icon(it.icon, null) },
                                         label = { Text(text = it.label) },
                                         onClick = {
                                             navController.popBackStack(
@@ -105,18 +114,48 @@ fun ScreenController(
 ) {
     NavHost(navController = navController, startDestination = "Monday") {
         composable("Monday") {
-            //Monday(mondayPeriods = subjects[0])
+            Monday(periods = getGenerated[0])
+            topBarTitle.value = "Monday"
+        }
+        composable("Tuesday") {
+            Monday(periods = getGenerated[1])
+            topBarTitle.value = "Tuesday"
+        }
+        composable("Wednesday") {
+            Monday(periods = getGenerated[2])
+            topBarTitle.value = "Wednesday"
+        }
+        composable("Thursday") {
+            Monday(periods = getGenerated[3])
+            topBarTitle.value = "Thursday"
+        }
+        composable("Friday") {
+            Monday(periods = getGenerated[4])
+            topBarTitle.value = "Friday"
+        }
+        composable("Saturday") {
+            Monday(periods = getGenerated[5])
+            topBarTitle.value = "Saturday"
         }
     }
 }
 
 @Composable
-fun Monday(mondayPeriods: Array<List<String>?>) {
-    Text(text = mondayPeriods.toString(),
-        style = TextStyle(color = Color.Black, fontSize = 20.sp),
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            //.background(Color.Cyan)
-    )
+fun Monday(periods: Array<List<String>?>) {
+    Column(
+        modifier = Modifier.background(Color.Green).fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        val subs = StringBuilder()
+        periods.forEach { element ->
+            subs.append(element)
+            subs.append("\n")
+        }
+        Text(
+            text = subs.toString(),
+            style = TextStyle(color = Color.White, fontSize = 20.sp),
+            textAlign = TextAlign.Center,
+        )
+    }
 }
